@@ -10,8 +10,9 @@ import static org.cazabat.sim.Constant.*;
  * @author pascaz10
  *
  */
-public abstract class Edge {
-	public final Vertex source;
+public class Edge {
+	
+	public final Vertex source;	
 	public final Vertex destination;
 	public float weight=UNDEFINED;
 
@@ -23,6 +24,19 @@ public abstract class Edge {
 	public Edge(Vertex source, Vertex destination) {
 		this.source=source;
 		this.destination=destination;
+	}
+	public Vertex getSource() {
+		return source;
+	}
+	public Vertex getDestination() {
+		return destination;
+	}
+	public float getWeight() {
+		return weight;
+	}
+	
+	public void setWeight(float weight) {
+		this.weight = weight;
 	}
 	
 }
