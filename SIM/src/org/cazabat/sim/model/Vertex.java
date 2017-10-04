@@ -11,6 +11,11 @@ public class Vertex extends Point {
 		super();
 		this.id=++Vertex.number;
 	}
+	
+	public Vertex(float longitude, float latitude) {
+		super(longitude,latitude);
+		this.id=++Vertex.number;
+	}
 
 	
 	

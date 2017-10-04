@@ -13,4 +13,5 @@ public class Constant {
 	public static final boolean ERROR=false;
 	
 	public static final int UNDEFINED=999;
+	public static enum SYSTEM {LAMBERT93,WSG84};
 }

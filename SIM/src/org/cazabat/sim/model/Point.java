@@ -3,6 +3,8 @@
  */
 package org.cazabat.sim.model;
 
+import org.cazabat.sim.Constant.SYSTEM;
+
 /**
  * @author pascaz10
  *
@@ -12,28 +14,41 @@ public class Point {
 	private float latitude;
 	private float longitude;
 	private float altitude;
-	private String systeme;
+	private String system="WSG84";
 	
-	public Point(float latitude, float longitude, float altitude, String systeme)
+	public Point(float latitude, float longitude, float altitude, String system)
 	{
 		this.latitude=latitude;
 		this.longitude=longitude;
 		this.altitude=altitude;
-		this.systeme=systeme;
+		if(system.equals(this.system))
+			{
+			return;
+			}
+		else {
+		for(SYSTEM s : SYSTEM.values()) {
+			if(s.name().equals(system))
+			{
+				if(Convert(s.name(),system)) {return;}
+				else throw new IllegalArgumentException();
+				
+			}		
+		} throw new IllegalArgumentException();
+		}
 	}
 	
 	public Point() {
 		this.latitude=0;
 		this.longitude=0;
 		this.altitude=0;
-		this.systeme="";
+		this.system="";
 		
 	}
 	public Point(float latitude, float longitude) {
 		this.latitude=latitude;
 		this.longitude=longitude;
 		this.altitude=0;
-		this.systeme="WSG84";
+		this.system="WSG84";
 	}
 
 	public float getLatitude() {
@@ -60,9 +75,11 @@ public class Point {
 		this.altitude = altitude;
 	}
 
-	public String getSysteme() {
-		return systeme;
+	public String getSystem() {
+		return system;
 	}
 
-
+    private boolean Convert(String from, String to)   {
+    	return false;
+    }
 }
