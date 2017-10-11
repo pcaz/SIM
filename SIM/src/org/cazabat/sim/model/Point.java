@@ -11,9 +11,9 @@ import org.cazabat.sim.Constant.SYSTEM;
  */
 public class Point {
 
-	private float latitude;
-	private float longitude;
-	private float altitude;
+	protected float latitude;
+	protected float longitude;
+	protected float altitude;
 	private String system="WSG84";
 	
 	public Point(float latitude, float longitude, float altitude, String system)

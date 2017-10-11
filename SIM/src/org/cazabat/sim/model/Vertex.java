@@ -1,28 +1,54 @@
 package org.cazabat.sim.model;
 
-public class Vertex extends Point {
+import static org.cazabat.sim.Constant.UNDEFINED;
 
+import java.util.Calendar;
+
+public class Vertex extends Point{
+	
 	static private int number=0;
+
+	public int numero;
+
+	private String name;
+	private int type;
+	private Calendar time;
 	
-	private final int id;
 	
-	
-	public Vertex() {
-		super();
-		this.id=++Vertex.number;
-	}
-	
-	public Vertex(float longitude, float latitude) {
+	public Vertex(String name, int type, float longitude, float latitude) {
 		super(longitude,latitude);
-		this.id=++Vertex.number;
+		this.name=name;
+		this.type=type;
+	}
+	
+	public Vertex(String name, int type) {
+		super();
+		this.name=name;
+		this.type=type;
 	}
 
-	
-	
-	public int getId() {
-		return id;
+	public String getName() {
+		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
 
-	
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public Calendar getTime() {
+		return time;
+	}
+
+	public void setTime(Calendar time) {
+		this.time = time;
+	}
+
 }
