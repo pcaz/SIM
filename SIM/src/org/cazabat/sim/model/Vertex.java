@@ -26,6 +26,10 @@ public class Vertex extends Point{
 		this.name=name;
 		this.type=type;
 	}
+	
+	public int getNumero() {
+		return this.numero;
+	}
 
 	public String getName() {
 		return name;
@@ -51,4 +55,8 @@ public class Vertex extends Point{
 		this.time = time;
 	}
 
+	public boolean equal(Vertex vertex) {
+		return vertex.getNumero() == this.numero;
+	}
+	
 }

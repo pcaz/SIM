@@ -8,10 +8,12 @@ import java.util.Iterator;
 public class Graph {
     private final List<Vertex> vertices;
     private final List<Edge> edges;
+    private final int size; 
 
     public Graph(List<Vertex> vertices, List<Edge> edges) {
-        this.vertices = vertices;
-        this.edges = edges;
+    	this.vertices=new ArrayList<Vertex>(vertices);
+    	this.edges=new ArrayList<Edge>(edges);
+        this.size = vertices.size();
     }
 
     public List<Vertex> getVertices() {
@@ -20,6 +22,14 @@ public class Graph {
 
     public List<Edge> getEdges() {
         return edges;
+    }
+    
+    public int size() {
+    	return this.size;
+    }
+    
+    public Vertex getVertex(int indice) {
+    	return this.vertices.get(indice);
     }
 
     public void addVertex(Vertex vertex) {
@@ -41,7 +51,7 @@ public class Graph {
 	
     }
     
-    public List<Edge> succesorVertex(Vertex node) {
+    public List<Edge> successorVertex(Vertex node) {
     	List<Edge> result=new ArrayList<Edge>();
     	Iterator<Edge> itr=edges.iterator();
     	Edge val;

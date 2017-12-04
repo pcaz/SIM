@@ -4,47 +4,73 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.cazabat.sim.Constant;
 import org.cazabat.sim.model.*;
 
+
+	
 public class DijkstraAlgorithm {
 
-    private final List<Vertex> nodes;
-    private final List<Edge> edges;
-    private Set<Vertex> settledNodes;
-    private Set<Vertex> unSettledNodes;
-    private Map<Vertex, Vertex> predecessors;
-    private Map<Vertex, Float> distance;
+	private Map<Vertex,DistancedEdge> settledNodes;
+	private Map<Vertex,DistancedEdge> unSettledNodes;
+	private Boolean gotIt;
+	private Vertex actualVertex; 
+	private float actualDistance;
+   
+  
+    
+    private Graph graph;
 
     public DijkstraAlgorithm(Graph graph) {
-        // create a copy of the array so that we can operate on this array
-        this.nodes = new ArrayList<Vertex>(graph.getVertices());
-        this.edges = new ArrayList<Edge>(graph.getEdges());
+        
+    	this.graph = graph;
+    	settledNodes = new HashMap<Vertex,DistancedEdge>();
+		unSettledNodes = new HashMap<Vertex,DistancedEdge>();
+		gotIt = false;
+		actualDistance = (float)0;
     }
 
-    public void execute(Vertex source) {
-        settledNodes = new HashSet<Vertex>();
-        unSettledNodes = new HashSet<Vertex>();
-        distance = new HashMap<Vertex, Float>();
-        predecessors = new HashMap<Vertex, Vertex>();
-        distance.put(source, (float) 0);
-        unSettledNodes.add(source);
-        while (unSettledNodes.size() > 0) {
-            Vertex node = getMinimum(unSettledNodes);
-            settledNodes.add(node);
-            unSettledNodes.remove(node);
-            findMinimalDistances(node);
-        }
+    public void execute(Vertex source, Vertex destination) {
+    	  
+        
+    // Initialization, distance of source is null, all others is undefined
+		
+    	for(int i=0; i<this.graph.size(); i++) {
+    		Vertex vertex = this.graph.getVertex(i);
+    		if(vertex.equal(source)) {
+    		
+    			settledNodes.put(source, new DistancedEdge(new Edge(null, source),actualDistance));
+    		}
+    		else {
+    			
+    		unSettledNodes.put(vertex,new DistancedEdge(null,(float)Constant.UNDEFINED));
+    		}
+    	}
+        
+ // Ok, we run it 
+       
+		while (!gotIt && unSettledNodes.size() > 0) {
+			
+            DistancedEdge newEdge = (unSettledNodes);
+            Vertex target = newEdge.getDestination();
+            float newDistance= newEdge.getWeight();
+            
+            actualDistance = actualDistance + newDistance;
+            settledNodes.put(target,newEdge);
+            unSettledNodes.remove(target);    
+       }
     }
 
-    private void findMinimalDistances(Vertex node) {
-        List<Vertex> adjacentNodes = getNeighbors(node);
-        for (Vertex target : adjacentNodes) {
-            if (getShortestDistance(target) > getShortestDistance(node)
+    private float findMinimalDistances(Vertex node) {
+        List<Edge> adjacentNodes = getNeighbors(node);
+        for (Edge target : adjacentNodes) {
+            if (target.getWeight() > getShortestDistance(node)
                     + getDistance(node, target)) {
                 distance.put(target, getShortestDistance(node)
                         + getDistance(node, target));
@@ -55,39 +81,45 @@ public class DijkstraAlgorithm {
 
     }
 
-    private float getDistance(Vertex node, Vertex target) {
-        for (Edge edge : edges) {
-            if (edge.getSource().equals(node)
-                    && edge.getDestination().equals(target)) {
-                return edge.getWeight();
+  
+
+    private List<Edge> getNeighbors(Vertex node) {
+    	List<Edge> result=new ArrayList<Edge>();
+        List<Edge> neighbors = graph.successorVertex(node);
+        for (Edge edge : neighbors) {
+                   if( !isSettled(edge.getDestination())) {
+                result.add(edge);
             }
         }
-        throw new RuntimeException("Should not happen");
+        return result;
     }
 
-    private List<Vertex> getNeighbors(Vertex node) {
-        List<Vertex> neighbors = new ArrayList<Vertex>();
-        for (Edge edge : edges) {
-            if (edge.getSource().equals(node)
-                    && !isSettled(edge.getDestination())) {
-                neighbors.add(edge.getDestination());
-            }
+    private Edge getMinimum(Map<Edge,Float> search) {
+        Float minimum= (float)0;
+        Edge ret=null;
+        Set<Edge> edges = search.keySet();
+        Iterator<Edge> it = edges.iterator();
+        
+        while (it.hasNext()){
+        	Edge val=it.next();
+        	if (minimum == null) {
+                minimum = val.getWeight();
+                ret=val;
+        	}
+        	else
+        	{
+        		if (val.getWeight()<minimum)
+        			{
+        					minimum=val.getWeight();
+        					ret=val;
+        					
+        			}
+        	}
+        	
+          
         }
-        return neighbors;
-    }
-
-    private Vertex getMinimum(Set<Vertex> vertexes) {
-        Vertex minimum = null;
-        for (Vertex vertex : vertexes) {
-            if (minimum == null) {
-                minimum = vertex;
-            } else {
-                if (getShortestDistance(vertex) < getShortestDistance(minimum)) {
-                    minimum = vertex;
-                }
-            }
-        }
-        return minimum;
+        return ret;
+        		
     }
 
     private boolean isSettled(Vertex vertex) {
@@ -124,4 +156,43 @@ public class DijkstraAlgorithm {
         return path;
     }
 
+}
+
+class DistancedEdge {
+	private Edge edge;
+	private Float distance ;
+	
+	// Distance is from the source, i.e from the last settledNode
+	
+	DistancedEdge(Edge edge, Float distance) {
+	   this.edge = edge;
+	   this.distance = distance;
+	}
+	Vertex getSource(){
+		return edge.getSource();
+		
+	}
+	
+	Vertex getDestination() {
+		return edge.getDestination();
+	}
+	
+	Float getWeight() {
+		return edge.getWeight();
+	}
+	
+	Float getDistance() {
+		return distance;
+	}
+	
+	DistancedEdge setDistance(Float distance) {
+		this.distance=distance;
+		return this;
+	}
+	
+	DistancedEdge put(Edge edge, Float distance) {
+		this.edge=edge;
+		this.distance=distance;
+		return this;
+	}
 }
