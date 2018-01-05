@@ -22,30 +22,28 @@ public class DijkstraAlgorithm {
 	private Boolean gotIt;
 	private Vertex actualVertex; 
 	private float actualDistance;
-   
-  
-    
     private Graph graph;
 
     public DijkstraAlgorithm(Graph graph) {
         
     	this.graph = graph;
-    	settledNodes = new HashMap<Vertex,DistancedEdge>();
-		unSettledNodes = new HashMap<Vertex,DistancedEdge>();
-		gotIt = false;
-		actualDistance = (float)0;
+    	
+    	this.settledNodes = new HashMap<Vertex,DistancedEdge>();
+		this.unSettledNodes = new HashMap<Vertex,DistancedEdge>();
+		this.gotIt = false;
+		this.actualDistance = (float)0;
     }
 
     public void execute(Vertex source, Vertex destination) {
     	  
         
     // Initialization, distance of source is null, all others is undefined
-		
+    	
+    	
     	for(int i=0; i<this.graph.size(); i++) {
     		Vertex vertex = this.graph.getVertex(i);
     		if(vertex.equal(source)) {
-    		
-    			settledNodes.put(source, new DistancedEdge(new Edge(null, source),actualDistance));
+    			settledNodes.put(source,new DistancedEdge(new Edge(null, source),actualDistance) );
     		}
     		else {
     			
@@ -53,11 +51,12 @@ public class DijkstraAlgorithm {
     		}
     	}
         
- // Ok, we run it 
-       
-		while (!gotIt && unSettledNodes.size() > 0) {
+ // Ok, we run it
+    	
+       Vertex from = source;
+		while (!gotIt && (unSettledNodes.size() > 0)) {
 			
-            DistancedEdge newEdge = (unSettledNodes);
+            DistancedEdge newEdge = newEdge(unSettledNodes, from, actualDistance);
             Vertex target = newEdge.getDestination();
             float newDistance= newEdge.getWeight();
             
@@ -66,7 +65,20 @@ public class DijkstraAlgorithm {
             unSettledNodes.remove(target);    
        }
     }
-
+    
+ /*   private DistancedEdge newEdge(Map <Vertex,DistancedEdge> unSNodes, Vertex from, Float distance) {
+    	
+    	DistancedEdge unSettledNode=null;
+    	List<Edge> successor = this.graph.successorVertex(from);
+    	Float min=(float)Constant.UNDEFINED;
+        for(int i=0; i<successor.size();i++) {
+        	unSettledNode = unSettledNodes.get(successor.get(i).getDestination());
+        	unSettledNodes.put(unSettledNode, value)get(unsettledNode).setDistance(distance + successor.get(i).getWeight();
+        	
+        }
+    	
+    }
+*/
     private float findMinimalDistances(Vertex node) {
         List<Edge> adjacentNodes = getNeighbors(node);
         for (Edge target : adjacentNodes) {
