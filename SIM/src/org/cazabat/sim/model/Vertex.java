@@ -19,12 +19,16 @@ public class Vertex extends Point{
 		super(longitude,latitude);
 		this.name=name;
 		this.type=type;
+		Vertex.number++;
+		this.numero = Vertex.number;
 	}
 	
 	public Vertex(String name, int type) {
 		super();
 		this.name=name;
 		this.type=type;
+		Vertex.number++;
+		this.numero = Vertex.number;
 	}
 	
 	public int getNumero() {
