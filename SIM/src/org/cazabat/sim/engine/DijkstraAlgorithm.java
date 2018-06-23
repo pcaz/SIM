@@ -10,19 +10,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.cazabat.sim.Constant;
+import org.cazabat.sim.engine.DijkstraAlgorithm.DistancedEdge;
 import org.cazabat.sim.model.*;
 
 
 	
 public class DijkstraAlgorithm {
 
-	private Map<Vertex,DistancedEdge> settleNodes;
+	private Map<Vertex,DistancedEdge> settledNodes;
 	private Map<Vertex,DistancedEdge> unSettledNodes;
 	private Boolean gotit;
-	private Vertex actualVertex; 
+	private Vertex actualNode; 
 	private float actualDistance;
     private Graph graph;
     private Vertex source;
@@ -33,7 +35,7 @@ public class DijkstraAlgorithm {
         
     	this.graph = graph;
     	
-    	this.settleNodes = new HashMap<Vertex,DistancedEdge>();
+    	this.settledNodes = new HashMap<Vertex,DistancedEdge>();
     	this.unSettledNodes = new HashMap<Vertex,DistancedEdge>();
 	    }
 
@@ -43,19 +45,13 @@ public class DijkstraAlgorithm {
     this.source = source;
     this.destination = destination;
     
-    // Initialization, distance of source is null, all others is undefined
+    // Initialization, distance of all vartex different of source in unSettledNodess with Undefined distance
     	
     	
     	for(int i=0; i<this.graph.size(); i++) {
     		Vertex vertex = this.graph.getVertex(i);
-    		if(vertex.equal(this.source)) {
-    			DistancedEdge actualDistancedEdge = new DistancedEdge(new Edge(null,vertex), (float)0);
-    			settleNodes.put(vertex,actualDistancedEdge);
-    		
-    		}
-    		else
-    		{
-    			unSettledNodes.put(vertex,new DistancedEdge(null,Constant.UNDEFINED));
+    		if(!vertex.equal(this.source)) {
+    				unSettledNodes.put(vertex,new DistancedEdge(new Edge(null, vertex),Constant.UNDEFINED));
     		}
     	}
         
@@ -63,132 +59,91 @@ public class DijkstraAlgorithm {
 
     
 		this.actualDistance = (float)0;
-	    
+	    this.actualNode = source;
 
 	    while(unSettledNodes.size() > 0) {
 			
-           Vertex newNode= onePass(this.actualDistance);
-           if (this.actualDistance == (float)0) {
-        	   this.settleNodes.remove(this.source);
+           onePass(this.actualNode,this.actualDistance);
+           DistancedEdge thisNode = getMinimum();
+           this.actualDistance = thisNode.getDistance();
+           Vertex newNode = thisNode.getDestination();
+           this.actualNode = newNode;
+           this.unSettledNodes.remove(newNode);
+           this.settledNodes.put(newNode,thisNode);
            }
-           this.actualDistance = this.settleNodes.get(newNode).getDistance();
-            
-                }
+           
     }
     
  /*   private DistancedEdge newEdge(Map <Vertex,DistancedEdge> unSNodes, Vertex from, Float distance) {
     	
-    	DistancedEdge unSettledNode=null;
+    	DistancedEdge unSettledNodes=null;
     	List<Edge> successor = this.graph.successorVertex(from);
     	Float min=(float)Constant.UNDEFINED;
         for(int i=0; i<successor.size();i++) {
-        	unSettledNode = unSettledNodes.get(successor.get(i).getDestination());
-        	unSettledNodes.put(unSettledNode, value)get(unsettledNode).setDistance(distance + successor.get(i).getWeight();
+        	unSettledNodes = unSettledNodess.get(successor.get(i).getDestination());
+        	unSettledNodess.put(unSettledNodes, value)get(unSettledNodes).setDistance(distance + successor.get(i).getWeight();
         	
         }
     	
     }
 */
-    private Vertex onePass(float actualDistance) {
+    private void onePass(Vertex node, float distance) {
     	
     	
-    	Map <Vertex,DistancedEdge> newOnes=new Hashtable<Vertex, DistancedEdge>();
+    	//first, we get all the successors of node
     	
+    	List<Edge> neighbours = this.graph.successorVertex(node);
     	
-    
+    	// for all successor, we adjust the unSettledNodes
     	
-        List<DistancedEdge> result = new ArrayList<DistancedEdge>();    	
-    	Set<Map.Entry<Vertex, DistancedEdge>> settled = this.settleNodes.entrySet();
-
-    	Iterator<Map.Entry<Vertex, DistancedEdge>> it = settled.iterator();
-        while(it.hasNext()) {
-        	DistancedEdge thisDistancedEdge = it.next().getValue();
-            Vertex node=thisDistancedEdge.getDestination();
-            newOnes.putAll(this.getNexts(node,actualDistance));
-          }
-        
-        Set <Map.Entry<Vertex, DistancedEdge>> modifs=newOnes.entrySet();
-        Iterator <Map.Entry<Vertex, DistancedEdge>> it1 = modifs.iterator();
-        
-        while(it1.hasNext()) {
-        	DistancedEdge thisOne = it1.next().getValue();
-        	this.unSettledNodes.remove(thisOne.getDestination());
-        	this.settleNodes.put(thisOne.getDestination(), thisOne);
-        }
-        return getMinimum(this.settleNodes);
-        
+    	ListIterator<Edge> it = neighbours.listIterator();
+    	while(it.hasNext()) {
+    		Edge thisEdge = it.next();
+    		Vertex thisNode = thisEdge.getDestination();
+    		float thisDistance = distance + thisEdge.getWeight();
+    		if(this.unSettledNodes.containsKey(thisNode)){
+    			if(this.unSettledNodes.get(thisNode).getDistance() > thisDistance) {
+    				this.unSettledNodes.put(thisNode, new DistancedEdge(thisEdge, thisDistance));
+    			}
+    			else {
+    				this.unSettledNodes.put(thisNode, new DistancedEdge(thisEdge, thisDistance));
+    			}
+    				
+    		}
+    		
+    	}
+    	
     }
 
   
 
-    private Map<Vertex, DistancedEdge> getNexts(Vertex node, float actualDistance) {
-    	
-    	float thisDistance = actualDistance;
-    	Map<Vertex, DistancedEdge> result=new Hashtable<Vertex, DistancedEdge>();
-    	
-    	// List<DistancedEdge> result=new ArrayList<DistancedEdge>();
     
-        List<Edge> neighbours = this.graph.successorVertex(node);
-        ListIterator<Edge> it=neighbours.listIterator();
-        while(it.hasNext())
-        {
-        	Edge thisOne = it.next();
-        	if(this.settleNodes.containsKey(thisOne.getDestination()))
-        	{
-        			DistancedEdge de = this.settleNodes.get(thisOne.getDestination()) ;
-        			if(de.distance > de.edge.getWeight()+actualDistance)
-        			{
-        				de.distance = de.edge.getWeight()+actualDistance;
-        				de.setEdge(de.getSource(), node);
-        				if(de.distance < thisDistance) {
-        					thisDistance = de.distance;
-        				}
-        				
-        			}
-        			
-        	}
-        	else
-        	{
-        		Vertex destination = thisOne.getDestination();
-        		float newDistance = thisOne.getWeight() +actualDistance;
-        		
-        		result.put(destination, new DistancedEdge(new Edge(node, destination), newDistance));
-        		
-        	    if(thisDistance==(float)0 || newDistance < thisDistance) {
-        	    	thisDistance = newDistance;
-        	    }
-        	    	
-        	    
-        	}
-        }       
-        return result;
-   }
-
-    private Vertex getMinimum(Map<Vertex, DistancedEdge> search) {
+    private DistancedEdge getMinimum() {
         
     	Float minimum= (float)Constant.UNDEFINED;
         
-        Vertex ret=null;
+        DistancedEdge ret=null;
         
-        Set<Vertex> vertexes = search.keySet();
-        Iterator<Vertex> it = vertexes.iterator();
+        Set <Map.Entry<Vertex, DistancedEdge>> nodes=this.unSettledNodes.entrySet();
+        Iterator<Entry<Vertex, DistancedEdge>> it = nodes.iterator();
         
         while (it.hasNext()){
-        	DistancedEdge val=search.get((it.next()));
-        	float newDistance= val.getDistance();
-        	if((newDistance != 0) && (newDistance < minimum)) { 
-        		ret=val.getDestination();
-        		minimum = newDistance; 
+        	Entry<Vertex, DistancedEdge> val=it.next();
+        	if(val.getValue().getDistance() < minimum) {
+        		minimum = val.getValue().getDistance();
+        		ret= val.getValue();
+        	} else {
+        		if (val.getValue().getDistance() == minimum) {
+        			//TODO et puis quoi, deux chemins possibles équidistans .
         		}
-           	}
+        	}
         	
-        
-        return ret;
-        		
+        }
+        return ret;		
     }
 
     private boolean isSettled(Vertex vertex) {
-        return settleNodes.containsKey(vertex);
+        return settledNodes.containsKey(vertex);
     }
 
    
@@ -197,7 +152,7 @@ class DistancedEdge {
 	private Edge edge;
 	private Float distance ;
 	
-	// Distance is from the source, i.e from the last settledNode
+	// Distance is from the source, i.e from the last settledNodes
 	
 	DistancedEdge(Edge edge, Float distance) {
 	   this.edge = edge;
