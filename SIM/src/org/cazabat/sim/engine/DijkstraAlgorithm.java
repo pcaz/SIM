@@ -101,13 +101,8 @@ public class DijkstraAlgorithm {
     		Edge thisEdge = it.next();
     		Vertex thisNode = thisEdge.getDestination();
     		float thisDistance = distance + thisEdge.getWeight();
-    		if(this.unSettledNodes.containsKey(thisNode)){
-    			if(this.unSettledNodes.get(thisNode).getDistance() > thisDistance) {
+   			if(this.unSettledNodes.get(thisNode).getDistance() > thisDistance) {
     				this.unSettledNodes.put(thisNode, new DistancedEdge(thisEdge, thisDistance));
-    			}
-    			else {
-    				this.unSettledNodes.put(thisNode, new DistancedEdge(thisEdge, thisDistance));
-    			}
     				
     		}
     		

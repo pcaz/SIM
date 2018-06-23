@@ -31,7 +31,7 @@ public class Main {
 	        edges.add (new Edge("AD",0,nodes.get(0), nodes.get(3), 3));
 	        edges.add (new Edge("DE",0,nodes.get(3), nodes.get(4), 1));
 	        edges.add (new Edge("CF",0,nodes.get(2), nodes.get(5), 3));
-	        edges.add (new Edge("EF",0,nodes.get(5), nodes.get(5), 1));
+	        edges.add (new Edge("EF",0,nodes.get(4), nodes.get(5), 1));
 	        
 	        
 
