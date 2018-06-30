@@ -36,7 +36,9 @@ public class DijkstraAlgorithm {
 
     public Result execute(Vertex source, Vertex destination) {
     	  
-    
+    // WARNING: in a non-oriented graph, execute modify the underlying graph
+    // so, if you call execute two times, you have to construct a new graph.
+    	
     this.source = source;
     this.destination = destination;
     
@@ -61,7 +63,9 @@ public class DijkstraAlgorithm {
 			
            onePass(this.actualNode,this.actualDistance);
            DistancedEdge thisNode = getMinimum();
-           
+           if(thisNode == null){ 
+        	   return new Result(Constant.UNDEFINED,null);
+           } 
            if(thisNode.getDestination()==this.destination){
         	   // Ok, we reach the destination 
         	   Vertex newNode = thisNode.getDestination();
@@ -72,9 +76,7 @@ public class DijkstraAlgorithm {
         	}
            
            // it's a deadlock
-           if(thisNode == null){ 
-        	   return new Result(Constant.UNDEFINED,null);
-           }
+           
            this.actualDistance = thisNode.getDistance();
            Vertex newNode = thisNode.getDestination();
            this.actualNode = newNode;
@@ -98,11 +100,11 @@ public class DijkstraAlgorithm {
 	    DistancedEdge newEdge = this.settledNodes.get(this.destination); 
 	    result.setDistance(newEdge.getDistance());
 	    reverse.add(newEdge.getEdge());
-	    do {
+	    while(newEdge.getEdge().getSource() != this.source) {
 	    	Vertex newVertex= newEdge.getEdge().getSource();
 	    	newEdge = this.settledNodes.get(newVertex);
 	    	reverse.add(newEdge.getEdge());
-	    	    } while(newEdge.getEdge().getSource() != this.source );
+	    };
 	    
 	    for(int i=reverse.size()-1; i>=0;i--){
 	    	result.AddEdge(reverse.get(i));

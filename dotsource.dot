@@ -1,21 +1,14 @@
-graph G {
-A;
-B;
-C;
-D;
-E;
-F;
-G;
-A--B [label=4.0];
-A--C [label=8.0color=red];
-C--B [label=7.0];
-B--D [label=18.0];
-D--C [label=10.0color=red];
-C--F [label=25.0];
-B--E [label=21.0];
-E--F [label=10.0];
-D--F [label=12.0color=red];
-E--D [label=15.0];
-E--G [label=17.0];
-F--G [label=7.0color=red];
+digraph G {
+B -> A [label=4.0];
+C -> A [label=8.0];
+C -> B [label=7.0];
+B -> D [label=18.0];
+D -> C [label=10.0];
+C -> F [label=25.0];
+B -> E [label=21.0];
+E -> F [label=10.0];
+D -> F [label=12.0];
+E -> D [label=15.0];
+G -> E [label=17.0];
+G -> F [label=7.0];
 }
