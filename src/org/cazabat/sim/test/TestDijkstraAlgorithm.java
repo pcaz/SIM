@@ -5,7 +5,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.cazabat.sim.Result;
 import org.cazabat.sim.engine.DijkstraAlgorithm;
 import org.cazabat.sim.model.*;
@@ -16,24 +22,91 @@ import static org.junit.Assert.assertTrue;
 
 public class TestDijkstraAlgorithm {
 
-    private List<Vertex> nodes;
-    private List<Edge> edges;
+	List<Vertex> nodes;
+    List<Edge> edges;
+    
+    nodes = new ArrayList<Vertex>();
+    edges = new ArrayList<Edge>();
+    boolean Or = false;
+    
+    Document document = null;
+	DocumentBuilderFactory factory = null;
+	
+    String userPath = System.getProperty("user.dir");
+    String pathSeparator = System.getProperty("file.separator"); 
+  
+    try{
+    	factory = DocumentBuilderFactory.newInstance();
+    	DocumentBuilder builder = factory.newDocumentBuilder();
+    	document = builder.parse(userPath+pathSeparator+"graph.xml");		
+    	
+    }catch(Exception e){
+    	e.printStackTrace();
+    }
+    
+    Element racine = document.getDocumentElement();
+    NodeList racineNoeuds = racine.getChildNodes();
+    
+    // First, we get the nodes
+    
+    Element xmlNodes=null;
+    
+    for(int i=0; i< racineNoeuds.getLength();i++){
+    	if(racineNoeuds.item(i).getNodeName().equals ( "NODES")){
+    		xmlNodes = (Element) racineNoeuds.item(i);
+    		break;
+    	}
+    }
+    NodeList xmlNode = xmlNodes.getElementsByTagName("NODE");
+    for(int i=0;i<xmlNode.getLength();i++)
+    {
+    	nodes.add(new Vertex(xmlNode.item(i).getTextContent().trim()));
+    }
+    // then, the edges.
+    
+   
+    Element xmlEdges=null;
+    for (int i=0;i<racineNoeuds.getLength();i++) {
+    	if(racineNoeuds.item(i).getNodeName().equals ( "EDGES")){
+    		xmlEdges = (Element) racineNoeuds.item(i);
+    		break;
+    	}
+    }
+     
+    NodeList xmlEdge = xmlEdges.getElementsByTagName("EDGE");
+    
+    Element xmlEntry;
+    for (int i=0;i<xmlEdge.getLength();i++) {
+    		 xmlEntry = (Element) xmlEdge.item(i);
+    		 NodeList xmlSource = xmlEntry.getElementsByTagName("SOURCE");
+    		 String xSource = xmlSource.item(0).getTextContent().trim();
+    		 NodeList xmlDestination = xmlEntry.getElementsByTagName("DESTINATION");
+    		 String xDestination = xmlDestination.item(0).getTextContent().trim();
+    		 NodeList xmlWeight = xmlEntry.getElementsByTagName("WEIGHT");
+    		 String xWeight = xmlWeight.item(0).getTextContent().trim();
+    		 Vertex xxSource=null;
+			 Vertex xxDestination=null;
+    		 for(Iterator<Vertex> it=nodes.iterator();it.hasNext();)
+    		 {
+    			 
+    			 Vertex val=it.next();
+    			 String c1=val.getName();
+    			 String c2=xSource;		 
+    			 if(val.getName().equals(xSource)) {xxSource=val;}		 
+    		     if(val.getName().equals(xDestination)) {xxDestination=val;}
+                 if(xxSource != null && xxDestination != null) {break;}
+               }
+    		 float xxWeight = Float.parseFloat(xWeight);
+    		 edges.add(new Edge(xxSource,xxDestination,xxWeight));
+    }
+    
+    
+    // at last, the orientation
+    
+    NodeList xmlOrientation = racine.getElementsByTagName("ISORIENTED");
+    String xOrientation=xmlOrientation.item(0).getTextContent().trim();
+     if(xOrientation.equals("1")) {Or=true;} else {Or=false;}
 
-    @Test
-    public void testExcute() {
-    	 List<Edge> edges;
-
-	        nodes = new ArrayList<Vertex>();
-	        edges = new ArrayList<Edge>();
-	    
-	        nodes.add(new Vertex("A",0,0,1));
-	        nodes.add(new Vertex("B",0,1,3));
-	        nodes.add(new Vertex("C",0,1,0));
-	        nodes.add(new Vertex("D",0,3,2));
-	        nodes.add(new Vertex("E",0,4,3));
-	        nodes.add(new Vertex("F",0,5,0));
-	        nodes.add(new Vertex("G",0,6,2));
-	        
 	        Vertex A=nodes.get(0);
 	        Vertex B=nodes.get(1);
 	        Vertex C=nodes.get(2);
@@ -42,21 +115,8 @@ public class TestDijkstraAlgorithm {
 	        Vertex F=nodes.get(5);
 	        Vertex G=nodes.get(6);
 	        
-	        
-	        edges.add (new Edge("BA",0,B,A, 4));
-	        edges.add (new Edge("CA",0,C,A, 8));
-	        edges.add (new Edge("CB",0,C,B, 7));
-	        edges.add (new Edge("BD",0,B,D, 18));
-	        edges.add (new Edge("DC",0,D,C, 10));
-	        edges.add (new Edge("CF",0,C,F, 25));
-	        edges.add (new Edge("BE",0,B,E, 21));
-	        edges.add (new Edge("EF",0,E,F, 10));
-	        edges.add (new Edge("DF",0,D,F, 12));
-	        edges.add (new Edge("ED",0,E,D, 15));
-	        edges.add (new Edge("GE",0,G,E, 17));
-	        edges.add (new Edge("GF",0,G,F, 7));
 	   
-	        boolean Or = false;
+
             Result result=null;
             DijkstraAlgorithm dijkstra=null;
             

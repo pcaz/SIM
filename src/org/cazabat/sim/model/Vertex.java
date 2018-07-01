@@ -22,10 +22,10 @@ public class Vertex extends Point{
 		this.numero = Vertex.number;
 	}
 	
-	public Vertex(String name, int type) {
+	public Vertex(String name) {
 		super();
 		this.name=name;
-		this.type=type;
+		this.type=0;
 		Vertex.number++;
 		this.numero = Vertex.number;
 	}
