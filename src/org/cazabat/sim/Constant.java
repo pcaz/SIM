@@ -15,5 +15,5 @@ public class Constant {
 	public static final float UNDEFINED=999;
 	public static enum SYSTEM {LAMBERT93,WSG84};
 	
-	public static String TempDir="/tmp"; 
+ 
 }

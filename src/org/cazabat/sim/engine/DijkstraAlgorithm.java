@@ -12,6 +12,7 @@ import java.util.Set;
 import org.cazabat.sim.Constant;
 import org.cazabat.sim.Result;
 import org.cazabat.sim.model.*;
+import org.cazabat.sim.util.Problem;
 
 
 	
@@ -33,6 +34,11 @@ public class DijkstraAlgorithm {
     	this.settledNodes = new HashMap<Vertex,DistancedEdge>();
     	this.unSettledNodes = new HashMap<Vertex,DistancedEdge>();
 	    }
+   public DijkstraAlgorithm(Problem problem) {
+	   this.graph = problem.getGraph();
+	   this.source = problem.getSource();
+	   this.destination = problem.getDestination();
+   }
 
     public Result execute(Vertex source, Vertex destination) {
     	  
@@ -87,7 +93,7 @@ public class DijkstraAlgorithm {
            // We must remove it to avoid ping-pong (B is the nearest node from A but of cause, A is also the nearest node from B)
            if(!this.graph.isOriented()){
         	   Edge iEdge=thisEdge.inverseEdge();
-        	   this.graph.removeEdge(iEdge);
+        	   this.graph.removeCalculatedEdge(iEdge);
            }
            
 	    }

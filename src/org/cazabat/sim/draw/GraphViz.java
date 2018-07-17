@@ -80,7 +80,8 @@ public class GraphViz
 /**
 * Load the config.properties file.
 */
-private final static String cfgProp = System.getProperty("user.dir")+"/config.properties";
+private final static String os = (String)System.getProperty("os.name").split(" ")[0].toLowerCase();	
+private final static String cfgProp = System.getProperty("user.dir")+System.getProperty("file.separator")+os+"_config.properties";
 private final static Properties configFile = new Properties() {
    private final static long serialVersionUID = 1L; {
        try {
@@ -92,7 +93,7 @@ private final static Properties configFile = new Properties() {
 /**
 * The dir. where temporary files will be created.
 */
-private static String TEMP_DIR = Constant.TempDir;
+private static String TEMP_DIR = configFile.getProperty("tempDir");
 
 /**
 * Where is your dot program located? It will be called externally.

@@ -7,7 +7,8 @@ import java.util.Iterator;
 
 public class Graph {
     private final List<Vertex> vertices;
-    private final List<Edge> edges;
+    private final List<Edge> calculatedEdges;
+    private final List<Edge> trueEdges;
     private final int size; 
     private boolean oriented;
 
@@ -19,14 +20,16 @@ public class Graph {
     	this.vertices=new ArrayList<Vertex>(vertices);
         this.size = vertices.size();
         this.oriented = false;
-        this.edges = getGraphEdges(edges);
+        this.trueEdges = new ArrayList<Edge>(edges);
+        this.calculatedEdges = getGraphEdges(edges);
     }
 
     public Graph(List<Vertex> vertices, List<Edge> edges, boolean oriented) {
     	this.vertices=new ArrayList<Vertex>(vertices);
     	this.size = vertices.size();
     	this.oriented = oriented;
-    	this.edges = getGraphEdges(edges);
+    	this.trueEdges = new ArrayList<Edge>(edges);
+    	this.calculatedEdges = getGraphEdges(edges);
     }
 
     public int getSize() {
@@ -56,8 +59,13 @@ public class Graph {
         return vertices;
     }
 
-    public List<Edge> getEdges() {
-        return edges;
+   
+    public List<Edge> getCalculatedEdges() {
+        return calculatedEdges;
+    }
+    
+    public List<Edge> getTrueEdges() {
+        return trueEdges;
     }
     
     public int size() {
@@ -73,39 +81,31 @@ public class Graph {
     }
 
     public void addEdge(Edge edge) {
-    	edges.add(edge);
+    	trueEdges.add(edge);
+    	calculatedEdges.add(edge);
     	if(!this.oriented){
-    		edges.add(new Edge(edge.getDestination(), edge.getSource(), edge.getWeight()));
+    		calculatedEdges.add(new Edge(edge.getDestination(), edge.getSource(), edge.getWeight()));
     	}
     }
     
-    public boolean removeEdge(Edge edge) {
+    public boolean removeCalculatedEdge(Edge edge) {
     
-    	Iterator<Edge> it=this.edges.iterator();
+    	Iterator<Edge> it=this.calculatedEdges.iterator();
     	while(it.hasNext()){
     		Edge thisEdge = it.next();
     		if(thisEdge.equals(edge)){
-    			this.edges.remove(thisEdge);
+    			this.calculatedEdges.remove(thisEdge);
     			return true;
     		}
     	}
     	return false;
     }
 
-    public boolean addPath(Vertex from, Vertex to, float weight) {
-    	// on compare ici les objets from et to, il faudrait comparer
-    	// le numero si on clonait les Node
-	if (!edges.contains(from) || !edges.contains(to))
-		return false;
-	
-	addEdge(new Edge(from, to, weight));
-	return true;
-	
-    }
+  
     
     public List<Edge> successorVertex(Vertex node) {
     	List<Edge> result=new ArrayList<Edge>();
-    	Iterator<Edge> itr=edges.iterator();
+    	Iterator<Edge> itr=calculatedEdges.iterator();
     	Edge val;
     	
     	while(itr.hasNext())
@@ -121,7 +121,7 @@ public class Graph {
     }
     public List<Edge> predecessorVertex(Vertex node) {
     	List<Edge> result=new ArrayList<Edge>();
-    	Iterator<Edge> itr=edges.iterator();
+    	Iterator<Edge> itr=calculatedEdges.iterator();
     	Edge val;
     	
     	while(itr.hasNext())
