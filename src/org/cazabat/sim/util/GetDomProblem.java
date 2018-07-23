@@ -24,6 +24,7 @@ class GetDomProblem  extends GetProblemImplement {
 	private String Weight = "WEIGHT";
 	private String Source="SOURCE";
 	private String Destination="DESTINATION";
+	private String schema = "Problem.xsd";
 	
 	@Override
 	public Problem getProblem(String nameProblem) {
@@ -35,6 +36,12 @@ class GetDomProblem  extends GetProblemImplement {
 		Vertex destination=null;
 	
 		String fileName= System.getProperty("user.dir")+System.getProperty("file.separator")+nameProblem;
+		String schemaName = System.getProperty("user.dir")+System.getProperty("file.separator")+schema;
+		
+		if(!XMLValidator.validate(schemaName,fileName)) {
+			System.out.println("Problem: "+fileName+" is not compliant with the schema : "+ schemaName);
+			System.exit(0);
+		}
 		
 		Document document = null;
 		DocumentBuilderFactory factory = null;
@@ -46,7 +53,8 @@ class GetDomProblem  extends GetProblemImplement {
 	    	document = builder.parse(fileName);		
 	    	
 	    }catch(Exception e){
-	    	e.printStackTrace();
+	    	System.out.println("Problem file :"+fileName+" not found");
+	    	System.exit(0);
 	    }
 	    
 	    Element racine = document.getDocumentElement();
@@ -111,7 +119,7 @@ class GetDomProblem  extends GetProblemImplement {
 	     
 	    NodeList xmlOrientation = racine.getElementsByTagName(Isoriented);
 	    String xOrientation=xmlOrientation.item(0).getTextContent().trim();
-	     if(xOrientation.equals("1")) {Or=true;} else {Or=false;}
+	     if(xOrientation.equals("1") || xOrientation.equals("true") ) {Or=true;} else {Or=false;}
 	    
 	     
 	    // so,now for the source and destination of the research

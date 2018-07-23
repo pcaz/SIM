@@ -28,6 +28,7 @@ import org.cazabat.sim.draw.GraphViz;
 
 public class Main {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 	
 		
@@ -60,12 +61,13 @@ public class Main {
 	         
 
 	         GetProblemFactory gb=new GetProblemFactory(TypeProblem);
-	         if (gb==null) {
+	         problem = gb.get(NameProblem);
+	         if (problem==null) {
 	        	 System.out.println("typeProblem not implemented");
 	        	 System.exit(0);
 	         }
 	    
-	          problem = gb.get(NameProblem);
+	          
 	    	  DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(problem.getGraph());
 	          Result result=dijkstra.execute(problem.getSource(),problem.getDestination());
 	          Boolean Or=problem.getGraph().isOriented();

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GRAPH>
-	<ISORIENTED>1</ISORIENTED>
-	<NODES>
+ <PROBLEM xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://SIM/xml">
+        <!--  xsi:schemaLocation= "http://SIM/xml /var/www/SIM/Problem.xsd"> -->
+
+	 <ISORIENTED>1</ISORIENTED> 
+
+ 	<NODES>
 		<NODE>A</NODE>
 		<NODE>B</NODE>
 		<NODE>C</NODE>
@@ -10,6 +14,7 @@
 		<NODE>F</NODE>
 		<NODE>G</NODE>
     </NODES>
+     
 	<EDGES>
 		<EDGE>
 			<SOURCE>A</SOURCE>
@@ -75,4 +80,4 @@
 	</EDGES>
 	<SOURCE>A</SOURCE>
 	<DESTINATION>F</DESTINATION>
-</GRAPH>
+</PROBLEM>
