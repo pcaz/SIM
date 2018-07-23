@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+xmlns = "http://SIM/xml" 
+targetNamespace="http://SIM/xml"
+elementFormDefault="qualified">
+
+<xs:element name="PROBLEM">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element name="ISORIENTED" type="xs:boolean"/>
+			<xs:element name="NODES" type="nodes"/>
+			<xs:element name="EDGES" type="edges"/>
+			<xs:element name="SOURCE" type="xs:string"/>
+			<xs:element name="DESTINATION" type="xs:string"/>	
+		
+		</xs:sequence>
+	</xs:complexType>
+</xs:element>
+
+<xs:complexType name="nodes">
+	<xs:sequence>
+		<xs:element minOccurs ="2" maxOccurs ="unbounded" name="NODE" type="xs:string"/>
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="edges">
+	<xs:sequence>
+		<xs:element maxOccurs ="unbounded" name="EDGE" type="edge"/>
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="edge">
+	<xs:sequence>
+		<xs:element name="SOURCE" type="xs:string"/>
+		<xs:element name="DESTINATION" type="xs:string"/>
+		<xs:element name="WEIGHT" type="xs:decimal"/>
+		
+	</xs:sequence>
+</xs:complexType>
+
+</xs:schema>
